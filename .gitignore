@@ -1,0 +1,9 @@
+/.env
+/*.egg-info
+
+debug.log
+/requirements.txt
+
+
+# security
+trentiemeciel.json
