@@ -54,31 +54,26 @@ def from_request(request):
 
 def convert_auth0_token_to_firebase_token(auth0_token):
     # valid auth0_token and get user_profile
-    up = get_user_profile(auth0_token)    
+    up = get_user_profile(auth0_token)
+    upset_user_profile_in_firestore(up)
     return create_firebase_token(up)
 
 
-def create_firebase_token(user_profile):
-    uid = user_profile.sub
-    custom_token = auth.create_custom_token(uid)
-    return str(custom_token, "utf-8")
-
-
-def create_session_in_firestore(access_token, user_profile):
+def upset_user_profile_in_firestore(user_profile):
 
     assert user_profile.sub is not None
     sub = user_profile.sub
 
-    db = firestore.client()    
-    auth.create_custom_token(sub)
-    
+    db = firestore.client()        
     user_doc_ref = db.collection("users").document(sub)
     user_doc_ref.set(user_profile.toDict())
-    session_doc_ref = db.collection(u'sessions').document(access_token)
-    session_doc_ref.set({
-        "expiration": datetime.datetime.now() + timedelta(days=1),
-        "user": user_doc_ref
-    })
+
+
+def create_firebase_token(user_profile):
+    uid = user_profile.sub
+    custom_token = auth.create_custom_token(uid)    
+    return str(custom_token, "utf-8")
+
 
 def get_user_profile(token):
     headers = {
@@ -91,5 +86,7 @@ def get_user_profile(token):
     return DotMap(resp)
 
 if __name__ == "__main__":
-    firebase_token = convert_auth0_token_to_firebase_token("Irsqzy4Bso-cqziWutbAYqvdanlCjCjV")
+    # export GOOGLE_APPLICATION_CREDENTIALS="trentiemeciel.json"
+    # get the token using postman
+    firebase_token = convert_auth0_token_to_firebase_token("rTVwkoVjSWisnrIn6lDFpD4azD88IvzR")
     print(f"firebase_token: {firebase_token}")
