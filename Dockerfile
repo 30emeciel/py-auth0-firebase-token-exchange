@@ -11,5 +11,5 @@ FROM gcr.io/google.com/cloudsdktool/cloud-sdk:321.0.0-slim as deployer
 WORKDIR /usr/src/app
 COPY --from=builder /usr/src/app/requirements.txt .
 COPY main.py .
-CMD gcloud functions deploy create_session --project trentiemeciel --source=. --trigger-http --region=europe-west3 --entry-point=from_request --runtime=python38 --memory=128 --allow-unauthenticated
+RUN gcloud functions deploy auth0-firebase-token-exchange --project trentiemeciel --source=. --trigger-http --region=europe-west3 --entry-point=from_request --runtime=python38 --memory=128 --allow-unauthenticated
 
