@@ -66,7 +66,7 @@ def upset_user_profile_in_firestore(user_profile):
 
     db = firestore.client()        
     user_doc_ref = db.collection("pax").document(sub)
-    user_doc_ref.set(user_profile.toDict())
+    user_doc_ref.update(user_profile.toDict())
 
 
 def create_firebase_token(user_profile):
