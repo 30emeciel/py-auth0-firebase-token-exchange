@@ -65,7 +65,7 @@ def upset_user_profile_in_firestore(user_profile):
     sub = user_profile.sub
 
     db = firestore.client()        
-    user_doc_ref = db.collection("users").document(sub)
+    user_doc_ref = db.collection("pax").document(sub)
     user_doc_ref.set(user_profile.toDict())
 
 
@@ -80,7 +80,7 @@ def get_user_profile(token):
         "Authorization": f"Bearer {token}"
     }
 
-    req = requests.get("https://30emeciel.eu.auth0.com/userinfo", headers=headers)
+    req = requests.get("https://paxid.eu.auth0.com/userinfo", headers=headers)
     req.raise_for_status()
     resp = req.json()
     return DotMap(resp)
@@ -88,5 +88,5 @@ def get_user_profile(token):
 if __name__ == "__main__":
     # export GOOGLE_APPLICATION_CREDENTIALS="trentiemeciel.json"
     # get the token using postman
-    firebase_token = convert_auth0_token_to_firebase_token("rTVwkoVjSWisnrIn6lDFpD4azD88IvzR")
+    firebase_token = convert_auth0_token_to_firebase_token("O10-CTLidM-olXeJb8fuvK3-klF8Uhgz")
     print(f"firebase_token: {firebase_token}")

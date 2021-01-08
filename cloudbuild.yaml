@@ -1,0 +1,19 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [ 'build', '-t', 'poetry', '.' ]
+- name: "poetry"
+  entrypoint: "poetry"
+  args: ["export", "--format", "requirements.txt", "--output", "requirements.txt", "--without-hashes"]
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - functions
+  - deploy
+  - auth0-firebase-token-exchange
+  - --project=trentiemeciel
+  - --source=.  
+  - --region=europe-west3
+  - --entry-point=from_request
+  - --runtime=python38
+  - --memory=128
+  - --trigger-http
+  - --allow-unauthenticated
