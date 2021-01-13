@@ -7,7 +7,6 @@ from firebase_admin import firestore
 from firebase_admin import auth
 import datetime
 from datetime import timedelta
-from google.cloud.firestore_v1.client import WriteOption
 
 # Use the application default credentials
 cred = credentials.ApplicationDefault()
