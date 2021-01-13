@@ -7,6 +7,7 @@ from firebase_admin import firestore
 from firebase_admin import auth
 import datetime
 from datetime import timedelta
+from google.cloud.firestore_v1.client import WriteOption
 
 # Use the application default credentials
 cred = credentials.ApplicationDefault()
@@ -66,7 +67,7 @@ def upset_user_profile_in_firestore(user_profile):
 
     db = firestore.client()        
     user_doc_ref = db.collection("pax").document(sub)
-    user_doc_ref.update(user_profile.toDict())
+    user_doc_ref.set(user_profile.toDict(), merge=True)
 
 
 def create_firebase_token(user_profile):
