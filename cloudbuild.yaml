@@ -1,7 +1,8 @@
 steps:
   - name: "gcr.io/trentiemeciel/poetry-builder"
     args: ["export", "--format", "requirements.txt", "--output", "requirements.txt", "--without-hashes"]
-  - name: 'gcr.io/cloud-builders/gcloud'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+    entrypoint: "gcloud"
     args:
     - functions
     - deploy
