@@ -1,3 +1,5 @@
+import os
+
 import firebase_admin
 import requests
 from dotmap import DotMap
@@ -10,6 +12,8 @@ cred = credentials.ApplicationDefault()
 firebase_admin.initialize_app(cred, {
     'projectId': "trentiemeciel",
 })
+
+ERROR_REPORTING_API_KEY = os.environ["ERROR_REPORTING_API_KEY"]
 
 
 def from_request(request):
@@ -45,7 +49,8 @@ def from_request(request):
         'Access-Control-Allow-Origin': '*',
     }
     return ({
-                "firebase_token": firebase_token
+                "firebase_token": firebase_token,
+                "error_reporting_api_key": ERROR_REPORTING_API_KEY,
             }, 200, headers)
 
 
