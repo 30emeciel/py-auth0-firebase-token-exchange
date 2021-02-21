@@ -1,3 +1,4 @@
+import os
 
 if __name__ == "__main__":
     # export GOOGLE_APPLICATION_CREDENTIALS="trentiemeciel.json"
@@ -6,5 +7,5 @@ if __name__ == "__main__":
     load_dotenv()
     import main
 
-    firebase_token = main.convert_auth0_token_to_firebase_token("gtxiNvJMjuDGec7GUziM2qSupsnCu74I")
+    firebase_token = main.convert_auth0_token_to_firebase_token(os.environ["AUTH0_TEST_TOKEN"])
     print(f"firebase_token: {firebase_token}")
