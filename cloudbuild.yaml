@@ -14,7 +14,8 @@ steps:
     - deploy
     - auth0-firebase-token-exchange
     - --project=trentiemeciel
-    - --source=.  
+    - --env-vars-file=env.yaml
+    - --source=.
     - --region=europe-west3
     - --entry-point=from_request
     - --runtime=python39
