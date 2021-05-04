@@ -1,19 +1,15 @@
 import os
 
-import firebase_admin
 import requests
-from dotmap import DotMap
+from box import Box
+from core import firestore_client
 from firebase_admin import auth
-from firebase_admin import credentials
-from firebase_admin import firestore
-
-# Use the application default credentials
-cred = credentials.ApplicationDefault()
-firebase_admin.initialize_app(cred, {
-    'projectId': "trentiemeciel",
-})
+from google.api_core.exceptions import NotFound
+from google.cloud.firestore_v1 import SERVER_TIMESTAMP
 
 ERROR_REPORTING_API_KEY = os.environ["ERROR_REPORTING_API_KEY"]
+
+db = firestore_client.db()
 
 
 def from_request(request):
@@ -42,7 +38,7 @@ def from_request(request):
     if request.method != 'POST':
         return abort(405)
 
-    request_data = DotMap(request.get_json())
+    request_data = Box(request.get_json())
     access_token = request_data.access_token
     firebase_token = convert_auth0_token_to_firebase_token(access_token)
     headers = {
@@ -65,9 +61,16 @@ def upset_user_profile_in_firestore(user_profile):
     assert user_profile.sub is not None
     sub = user_profile.sub
 
-    db = firestore.client()
+    user_profile_dict = user_profile.to_dict()
     user_doc_ref = db.collection("pax").document(sub)
-    user_doc_ref.set(user_profile.toDict(), merge=True)
+    try:
+        user_doc_ref.update(user_profile_dict)
+    except NotFound as e:
+        user_profile_dict.update({
+            "created": SERVER_TIMESTAMP,
+            "state": "AUTHENTICATED",
+        })
+        user_doc_ref.set(user_profile_dict, merge=True)
 
 
 def create_firebase_token(user_profile):
@@ -84,4 +87,4 @@ def get_user_profile(token):
     req = requests.get("https://paxid.eu.auth0.com/userinfo", headers=headers)
     req.raise_for_status()
     resp = req.json()
-    return DotMap(resp)
+    return Box(resp)
