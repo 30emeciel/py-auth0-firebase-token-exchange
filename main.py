@@ -65,7 +65,7 @@ def upset_user_profile_in_firestore(user_profile):
     user_doc_ref = db.collection("pax").document(sub)
     try:
         user_doc_ref.update(user_profile_dict)
-    except NotFound as e:
+    except NotFound:
         user_profile_dict.update({
             "created": SERVER_TIMESTAMP,
             "state": "AUTHENTICATED",
@@ -87,4 +87,7 @@ def get_user_profile(token):
     req = requests.get("https://paxid.eu.auth0.com/userinfo", headers=headers)
     req.raise_for_status()
     resp = req.json()
-    return Box(resp)
+    obj = Box(resp)
+    if obj.name == obj.email:  # auth0 weird name
+        obj.name = obj.get("nickname") or obj.email
+    return obj
