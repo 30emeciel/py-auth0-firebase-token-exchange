@@ -45,9 +45,9 @@ def from_request(request):
         'Access-Control-Allow-Origin': '*',
     }
     return ({
-                "firebase_token": firebase_token,
-                "error_reporting_api_key": ERROR_REPORTING_API_KEY,
-            }, 200, headers)
+        "firebase_token": firebase_token,
+        "error_reporting_api_key": ERROR_REPORTING_API_KEY,
+    }, 200, headers)
 
 
 def convert_auth0_token_to_firebase_token(auth0_token):
