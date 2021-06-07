@@ -51,6 +51,14 @@ def google_user_profile_json():
 
 
 @pytest.fixture()
+def user_profile_no_email_json():
+    return {
+            "sub": "test|432",
+            "name": "firstname lastname",
+    }
+
+
+@pytest.fixture()
 def user_profile(auth0_user_profile_json):
     return Box(auth0_user_profile_json)
 
@@ -105,4 +113,14 @@ def test_get_user_profile_google(when, google_user_profile_json):
     up = main.get_user_profile("dummy_token")
     assert up.name == "firstname lastname"
     assert up.email == "firstname.lastname@gmail.com"
+
+
+def test_get_user_profile_no_email(when, user_profile_no_email_json):
+    import main
+    import requests
+    response = mock({'status_code': 200, 'json': lambda: user_profile_no_email_json})
+    when(requests).get("https://paxid.eu.auth0.com/userinfo", ...).thenReturn(response)
+    up = main.get_user_profile("dummy_token")
+    assert up.name == "firstname lastname"
+    assert up.get("email") is None
 

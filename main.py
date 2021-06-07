@@ -88,6 +88,6 @@ def get_user_profile(token):
     req.raise_for_status()
     resp = req.json()
     obj = Box(resp)
-    if obj.name == obj.email:  # auth0 weird name
+    if "email" in obj and obj.name == obj.email:  # auth0 weird name
         obj.name = obj.get("nickname") or obj.email
     return obj
