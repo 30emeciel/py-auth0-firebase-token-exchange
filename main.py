@@ -59,10 +59,10 @@ def convert_auth0_token_to_firebase_token(auth0_token):
 
 def upset_user_profile_in_firestore(user_profile):
     assert user_profile.sub is not None
-    sub = user_profile.sub
+    pax_id = user_profile.pop("sub")
 
     user_profile_dict = user_profile.to_dict()
-    user_doc_ref = db.collection("pax").document(sub)
+    user_doc_ref = db.collection("pax").document(pax_id)
     try:
         user_doc_ref.update(user_profile_dict)
     except NotFound:
