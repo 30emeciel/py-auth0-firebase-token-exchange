@@ -53,14 +53,13 @@ def from_request(request):
 def convert_auth0_token_to_firebase_token(auth0_token):
     # valid auth0_token and get user_profile
     up = get_user_profile(auth0_token)
-    upset_user_profile_in_firestore(up)
-    return create_firebase_token(up)
+    assert up.sub is not None
+    pax_id = up.pop("sub")
+    upset_user_profile_in_firestore(pax_id, up)
+    return create_firebase_token(pax_id)
 
 
-def upset_user_profile_in_firestore(user_profile):
-    assert user_profile.sub is not None
-    pax_id = user_profile.pop("sub")
-
+def upset_user_profile_in_firestore(pax_id, user_profile):
     user_profile_dict = user_profile.to_dict()
     user_doc_ref = db.collection("pax").document(pax_id)
     try:
@@ -73,9 +72,8 @@ def upset_user_profile_in_firestore(user_profile):
         user_doc_ref.set(user_profile_dict, merge=True)
 
 
-def create_firebase_token(user_profile):
-    uid = user_profile.sub
-    custom_token = auth.create_custom_token(uid)
+def create_firebase_token(pax_id):
+    custom_token = auth.create_custom_token(pax_id)
     return str(custom_token, "utf-8")
 
 

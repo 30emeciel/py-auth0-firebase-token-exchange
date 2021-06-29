@@ -77,7 +77,7 @@ def test_upset_user_profile_in_firestore(when, db, user_profile):
     when(collection).document(user_profile.sub).thenReturn(document)
     when(document).update(...).thenReturn()
     import main
-    main.upset_user_profile_in_firestore(user_profile)
+    main.upset_user_profile_in_firestore("auth0|0000", user_profile)
 
 
 def test_upset_user_profile_in_firestore_not_existant(when, db):
@@ -91,7 +91,7 @@ def test_upset_user_profile_in_firestore_not_existant(when, db):
     when(document).update(...).thenRaise(NotFound("not found"))
     when(document).set(...).thenReturn()
     import main
-    main.upset_user_profile_in_firestore(not_existant_up)
+    main.upset_user_profile_in_firestore("non_existent", not_existant_up)
 
 
 def test_get_user_profile_auth0(when, auth0_user_profile_json):
